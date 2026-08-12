@@ -1,0 +1,16 @@
+# Python / AI Service
+ai_service/__pycache__/
+ai_service/venv/
+.env
+
+# Flutter / Mobile
+mobile/.dart_tool/
+mobile/build/
+mobile/.packages
+mobile/.pub-cache/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
