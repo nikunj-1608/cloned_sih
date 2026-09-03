@@ -8,5 +8,6 @@ class Settings:
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", 8000))
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
 
 settings = Settings()
