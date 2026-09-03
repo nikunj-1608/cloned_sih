@@ -1,7 +1,6 @@
 # Python / AI Service
 ai_service/__pycache__/
 ai_service/venv/
-venv/
 .env
 
 # Flutter / Mobile
