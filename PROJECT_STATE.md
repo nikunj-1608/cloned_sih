@@ -4,45 +4,94 @@
 > This is a living document. Update your respective task statuses here before closing any pull request to the `staging` branch.
 
 ## Current Status Overview
-**Active Phase:** Phase 1 (Foundation & Project Setup)
+**Active Phase:** Phase 3 (Offline Safety Kernel & The Alarm) — Part I, pre-prototype
 **Overall Health:** On Track
+**Last Updated:** 2026-09-08
 
 ---
 
 ## Milestone Tracking
 
-### Phase 1: Foundation & Project Setup (Active)
-- [x] Repository initialization and branch protection (`staging` and `main` locked).
-- [x] Initial documentation (`README.md`, `Tasks.md`, `PS.md` created).
-- [ ] Backend: Initialize FastAPI server and Supabase instance.
-- [ ] Backend: Enable PostGIS extension and create basic schemas.
-- [ ] Frontend: Initialize Flutter project with Riverpod.
-- [ ] Frontend: Render basic `flutter_map` interface.
+> Phases are split around the prototype video. See `Tasks.md`.
 
-### Phase 2: Offline Engine & Geospatial Core (Pending)
-- [ ] Backend: Endpoints for IMBL, MPA, and PFZ GeoJSON data.
-- [ ] Frontend: Implement `sqflite` caching for offline boundaries.
-- [ ] Frontend: Integrate `turf_dart` for Point-in-Polygon (PiP) distance calculations.
-- [ ] Frontend: Connect hardware GPS listener for geofencing alarms.
+### Part I — Before the Prototype
 
-### Phase 3: External API & UI Integration (Pending)
-- [ ] Backend: Data pipelines for Open-Meteo and INCOIS.
-- [ ] Frontend: Build conversational chat interface.
-- [ ] Frontend: Integrate AI4Bharat Bhashini (STT/TTS).
+**Phase 0: Repository Scaffold — Complete**
+- [x] Monorepo layout (`mobile/`, `backend/`, `ai_service/`, `data/seed/`).
+- [x] `.gitignore` corrected; `.env.example` templates added.
 
-### Phase 4: Multi-Agent ML Orchestration (Pending)
-- [ ] ML: Build LangGraph Supervisor and specialist sub-agents.
-- [ ] ML: Implement Gemini 1.5 Flash structured outputs.
-- [ ] Backend: Expose LangGraph swarm via FastAPI.
-- [ ] Frontend: Parse JSON responses and render dynamic routes.
+**Phase 1: Mobile Foundation — Complete**
+- [x] Flutter project with Riverpod, Android + iOS.
+- [x] Design system for low-literacy, high-glare marine use.
+- [x] `flutter_map` with IMBL / MPA / PFZ layers and a legend.
+- [x] Dependency-free geodesy kernel with 12 unit tests.
+- [x] Verified: `flutter analyze` clean, 13/13 tests pass, debug APK builds.
 
-### Phase 5: Testing, Edge Cases & Final Polish (Pending)
-- [ ] ML: Refine prompts for auditable execution traces.
-- [ ] Backend: Implement telemetry flush for trip closures.
-- [ ] Frontend: Polish offline alarm escalation and handle API timeouts.
+**Phase 2: Backend Core API — Complete**
+- [x] FastAPI in `backend/` (uv, Python 3.13) with strict Pydantic schemas.
+- [x] `/health` — reports seed-data counts, not just liveness.
+- [x] `/v1/boundaries` and `/v1/pfz` — GeoJSON from `data/seed/`, radius filtering.
+- [x] `/v1/marine/conditions` — live Open-Meteo, degrades instead of failing.
+- [x] `/v1/advisory-pack` — bundled offline response with `valid_until`.
+- [x] `POST /v1/chat` — schema locked; deterministic router reports `engine="rules"`.
+- [x] Verified: 19/19 tests pass, ruff clean, live data confirmed end to end.
+- [ ] Local PostGIS container — **deferred to Phase 6**, not needed for the video.
+
+**Phase 3: Offline Safety Kernel & The Alarm — Pending**
+- [ ] `sqflite` advisory-pack cache.
+- [ ] `geolocator` position stream + `DEMO_MODE` scripted track.
+- [ ] Full-screen boundary alarm: siren, haptic, time-to-breach escalation.
+- [ ] Staleness meter; airplane-mode verification.
+
+**Phase 4: Conversational Layer — Pending**
+- [ ] LangGraph supervisor + specialists on Gemini 2.5 Flash.
+- [ ] `agent_trace[]` emission and the trace panel in-app.
+- [ ] On-device STT/TTS behind a swappable interface.
+
+**Phase 5: Demo Assembly & Shoot — Pending**
+- [ ] Run of show scripted; demo dataset seeded; two full rehearsals; record.
+
+### Part II — After the Prototype
+- [ ] Phase 6: Authoritative IMBL/MPA data, INCOIS ingestion, PostGIS as source of truth.
+- [ ] Phase 7: Risk / route / reporting agents, multi-turn context, eval harness.
+- [ ] Phase 8: Bhashini, language detection, five regional languages.
+- [ ] Phase 9: Telemetry flush, background alarms, battery profiling, auth.
+- [ ] Phase 10: Licensed tile source, field testing, Play Store release.
 
 ---
 
-## 4. Blockers & Risks
+## Architecture Decisions
 
-You can insert issues you're facing here.
+### The "Two-Brain" split
+The problem statement demands a conversational AI platform, but the app must work at sea with zero connectivity. These are resolved by splitting the system explicitly:
+
+*   **Offline Safety Kernel** — geofencing, distance, time-to-breach, and alarms. Runs entirely on-device against cached data. No network, no LLM. It cannot hallucinate.
+*   **Online Reasoning Brain** — the LangGraph agent swarm. Runs at port or within cell range.
+
+A language model never decides whether the vessel is about to cross a maritime boundary.
+
+### Demo region
+Palk Strait / Rameswaram. The IMBL sits close to shore there and boundary crossings are a well-documented real-world problem, which makes the geofencing demo urgent rather than academic.
+
+---
+
+## Blockers & Risks
+
+| # | Issue | Impact | Mitigation |
+|---|---|---|---|
+| 1 | **INCOIS has no consumable public API.** Probed 2026-09-08: `portal/osf` → 404, `geoserver` → 403, `las` and `sarat` → timeout. PFZ advisories are published as per-district PDF/text bulletins, not GeoJSON. | High — Phase 2 and 3 both assumed an API that does not exist. | Seed PFZ/SST/chlorophyll into PostGIS from published bulletins. Treat a live parser as a stretch goal. |
+| 2 | **Bhashini onboarding latency.** ULCA/UDYAT key issuance takes days; pipeline endpoints are unreliable. | Medium — could block the voice demo. | STT/TTS behind a Dart interface; on-device `speech_to_text` + `flutter_tts` is the default implementation. |
+| 3 | **`turf_dart` does not exist** on pub.dev. The package is `turf`, at `0.0.12`. | Medium — would have failed at `pub add`, and is unfit for the safety path. | Dependency-free ray-casting PiP + haversine in Dart. |
+| 4 | **Gemini 1.5 Flash is retired** for new projects; `google-generativeai` is the deprecated SDK. | Medium — would produce dead code. | Gemini 2.5 Flash via `google-genai`. |
+| 5 | **First backend PR was reverted** (`5657bbf`) — code landed at repo root with committed `__pycache__/` blobs. | Resolved | Monorepo layout enforced in Phase 0; `.gitignore` corrected. |
+| 6 | **Cannot film the geofence alarm at sea.** Live GPS will not fire on cue during a take. | Medium — risks the prototype video. | Demo Mode replays a canned GPS track toward the IMBL. |
+
+---
+
+## Verified External Dependencies
+
+| Source | Status | Notes |
+|---|---|---|
+| Open-Meteo Marine API | Working, keyless | Verified 2026-09-08 against 13.04N / 80.45E |
+| INCOIS | Not consumable | See blocker #1 |
+| OSM raster tiles | Working | Used for the base map |

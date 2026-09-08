@@ -1,15 +1,36 @@
-# Python / AI Service
-ai_service/__pycache__/
-ai_service/venv/
+# --- Secrets -------------------------------------------------------------
+# Matches .env at any depth. Only the .env.example templates are committed.
 .env
+.env.*
+!.env.example
 
-# Flutter / Mobile
+# --- Python (backend/ and ai_service/) -----------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Flutter / Dart (mobile/) --------------------------------------------
 mobile/.dart_tool/
 mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
 mobile/.packages
 mobile/.pub-cache/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+*.iml
 
-# OS / IDE
+# --- OS / IDE ------------------------------------------------------------
 .DS_Store
 Thumbs.db
 .vscode/

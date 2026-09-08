@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "note": "Hand-drawn for development and the prototype video. NOT survey-accurate. Must not be used for navigation. Replaced with authoritative data in Phase 6.",
+  "advisory_source": "INCOIS PFZ advisory (seeded placeholder)",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pfz-north",
+        "name": "PFZ North",
+        "name_ta": "மீன்பிடி மண்டலம்",
+        "confidence": "high",
+        "kind": "pfz",
+        "sst_c": 28.4,
+        "chlorophyll_mg_m3": 0.62
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.32,
+              9.52
+            ],
+            [
+              79.46,
+              9.5
+            ],
+            [
+              79.44,
+              9.38
+            ],
+            [
+              79.3,
+              9.4
+            ],
+            [
+              79.32,
+              9.52
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pfz-east",
+        "name": "PFZ East",
+        "name_ta": "மீன்பிடி மண்டலம்",
+        "confidence": "medium",
+        "kind": "pfz",
+        "sst_c": 28.4,
+        "chlorophyll_mg_m3": 0.62
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.44,
+              9.26
+            ],
+            [
+              79.54,
+              9.24
+            ],
+            [
+              79.52,
+              9.14
+            ],
+            [
+              79.42,
+              9.16
+            ],
+            [
+              79.44,
+              9.26
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

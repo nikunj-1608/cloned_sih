@@ -1,0 +1,98 @@
+{
+  "type": "FeatureCollection",
+  "note": "Hand-drawn for development and the prototype video. NOT survey-accurate. Must not be used for navigation. Replaced with authoritative data in Phase 6.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "imbl-india-srilanka",
+        "kind": "imbl",
+        "name": "India–Sri Lanka International Maritime Boundary",
+        "name_ta": "இந்திய–இலங்கை கடல் எல்லை",
+        "severity": "critical",
+        "advice": "Do not cross. Turn back.",
+        "advice_ta": "கடக்க வேண்டாம். திரும்பிச் செல்லுங்கள்."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.05,
+            10.3
+          ],
+          [
+            79.85,
+            9.85
+          ],
+          [
+            79.7,
+            9.55
+          ],
+          [
+            79.55,
+            9.39
+          ],
+          [
+            79.35,
+            9.1
+          ],
+          [
+            79.05,
+            8.85
+          ],
+          [
+            78.75,
+            8.5
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "mpa-gulf-of-mannar",
+        "kind": "mpa",
+        "name": "Gulf of Mannar Marine National Park",
+        "name_ta": "மன்னார் வளைகுடா கடல் தேசிய பூங்கா",
+        "severity": "restricted",
+        "advice": "Protected area. Fishing prohibited.",
+        "advice_ta": "பாதுகாக்கப்பட்ட பகுதி. மீன்பிடி தடை."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.1,
+              9.22
+            ],
+            [
+              79.24,
+              9.16
+            ],
+            [
+              79.2,
+              9.04
+            ],
+            [
+              79.04,
+              8.98
+            ],
+            [
+              78.94,
+              9.09
+            ],
+            [
+              78.98,
+              9.19
+            ],
+            [
+              79.1,
+              9.22
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

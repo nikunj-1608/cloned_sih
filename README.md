@@ -69,4 +69,52 @@ Once it is set up, to set up your local environment, follow these exact steps:
 
 ---
 
+## Repository Layout
+
+All service code lives inside its own top-level directory. Nothing but
+documentation and CI config belongs at the repository root.
+
+```
+SIH26/
+├── mobile/        Flutter app (Dart) — the offline safety kernel and UI
+├── backend/       FastAPI service (Python) — REST API over Supabase/PostGIS
+├── ai_service/    LangGraph agent swarm (Python) — the reasoning brain
+├── data/seed/     Seeded GeoJSON: IMBL, MPAs, PFZ advisories
+└── *.md           Project documentation
+```
+
+---
+
+## 4. Running the Mobile App
+
+The app targets **Android and iOS**. It is not a web app — geofencing needs a
+real GPS receiver and background execution.
+
+```bash
+cd mobile
+cp .env.example .env      # endpoints and flags only, no secrets
+flutter pub get
+flutter run
+```
+
+`DEMO_MODE=true` in `mobile/.env` replays a scripted GPS track heading out of
+Rameswaram toward the maritime boundary, so the alarm can be demonstrated and
+filmed on land. Set it to `false` on an actual vessel.
+
+To check your work before opening a PR:
+
+```bash
+flutter analyze     # must report no issues
+flutter test        # must be green
+```
+
+> [!NOTE]
+> `mobile/.env` is bundled into the app as an asset at build time. It holds
+> endpoints and feature flags **only**. Anything secret — Gemini keys, Bhashini
+> credentials, the Supabase service role key — belongs in the root `.env` and is
+> read by the backend, never by the app.
+
+
+---
+
 If you have any doubts regarding the `.env` setup, API keys, or face any issues contact me directly.
