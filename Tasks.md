@@ -63,19 +63,21 @@ before crossing the maritime boundary — with the network switched off.
 - [ ] ~~Local PostGIS in Docker~~ — **moved to Phase 6.** Shapely over seeded
       GeoJSON covers every demo query; a database buys nothing before the video.
 
-## Phase 3: Offline Safety Kernel & The Alarm (ACTIVE)
+## Phase 3: Offline Safety Kernel & The Alarm — DONE
 > **Goal:** The money shot. The alarm must fire on camera, with the radio off.
 
 ### Yashika (Frontend)
-- [ ] `sqflite` cache: download the advisory pack at port, read it at sea.
-- [ ] Wire `geolocator` to the real position stream, with `DEMO_MODE` replaying a
+- [x] `sqflite` cache: download the advisory pack at port, read it at sea.
+- [x] Wire `geolocator` to the real position stream, with `DEMO_MODE` replaying a
       scripted track so the alarm can be filmed on land.
-- [ ] **Boundary alarm UI** — full-screen takeover, siren, haptic, and a single
-      large dismiss. Escalates by time-to-breach: 45 min, 15 min, crossing.
-- [ ] Staleness meter: visibly degrade confidence as cached data ages.
-- [ ] Airplane-mode test: every safety feature must work with the radio off.
+- [x] **Boundary alarm UI** — full-screen takeover, siren, haptic, and a single
+      large dismiss. Escalates by time-to-breach: 45 / 15 / 5 min, then breach.
+- [x] Staleness meter: visibly degrade confidence as cached data ages.
+- [x] Crossing detection by side-of-line, so the alarm does not fall silent
+      once the vessel is past the boundary.
+- [ ] Airplane-mode test on a physical handset — **still to do, needs a device.**
 
-## Phase 4: Conversational Layer
+## Phase 4: Conversational Layer (ACTIVE)
 > **Goal:** Ask a question out loud, get an answer with a map and its evidence.
 
 ### Anushka (ML)

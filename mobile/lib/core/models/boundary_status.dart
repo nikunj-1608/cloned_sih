@@ -11,6 +11,7 @@ class BoundaryStatus {
     required this.distanceKm,
     required this.minutesToBreach,
     required this.isApproaching,
+    this.hasCrossed = false,
   });
 
   final String name;
@@ -20,7 +21,15 @@ class BoundaryStatus {
   final int? minutesToBreach;
   final bool isApproaching;
 
+  /// The vessel is on the far side of the boundary from its home waters.
+  ///
+  /// Detected by side-of-line comparison rather than distance: past the line
+  /// the distance grows again, so a distance-only alarm would fall silent at
+  /// the worst possible moment.
+  final bool hasCrossed;
+
   SafetyLevel get level {
+    if (hasCrossed) return SafetyLevel.danger;
     if (!isApproaching) return SafetyLevel.safe;
     final minutes = minutesToBreach;
     if (minutes == null) return SafetyLevel.safe;
@@ -30,6 +39,7 @@ class BoundaryStatus {
   }
 
   String get headline {
+    if (hasCrossed) return 'You have crossed';
     final minutes = minutesToBreach;
     if (!isApproaching || minutes == null) {
       return '${distanceKm.toStringAsFixed(0)} km away';

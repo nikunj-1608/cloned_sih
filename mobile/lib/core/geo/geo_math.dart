@@ -31,16 +31,66 @@ abstract final class GeoMath {
   /// Segments are short relative to the earth's curvature at the scale we care
   /// about (tens of kilometres), so each one is flattened with an
   /// equirectangular projection before the perpendicular is taken.
-  static double distanceToPolylineKm(LatLng p, List<LatLng> line) {
-    if (line.isEmpty) return double.infinity;
-    if (line.length == 1) return haversineKm(p, line.first);
+  static double distanceToPolylineKm(LatLng p, List<LatLng> line) =>
+      nearestSegment(p, line).distanceKm;
+
+  /// The closest segment of [line] to [p], and how far away it is.
+  ///
+  /// The index is needed to decide which *side* of the boundary a vessel is
+  /// on — see [sideOfPolyline].
+  static ({double distanceKm, int segmentIndex}) nearestSegment(
+    LatLng p,
+    List<LatLng> line,
+  ) {
+    if (line.isEmpty) return (distanceKm: double.infinity, segmentIndex: -1);
+    if (line.length == 1) {
+      return (distanceKm: haversineKm(p, line.first), segmentIndex: 0);
+    }
 
     var best = double.infinity;
+    var bestIndex = 0;
     for (var i = 0; i < line.length - 1; i++) {
       final d = _distanceToSegmentKm(p, line[i], line[i + 1]);
-      if (d < best) best = d;
+      if (d < best) {
+        best = d;
+        bestIndex = i;
+      }
     }
-    return best;
+    return (distanceKm: best, segmentIndex: bestIndex);
+  }
+
+  /// Which side of [line] the point [p] falls on: `1`, `-1`, or `0` on the line.
+  ///
+  /// Uses the sign of the cross product against the nearest segment. The
+  /// absolute value is meaningless — only the comparison between two points
+  /// matters, which is how [hasCrossed] detects a breach.
+  static int sideOfPolyline(LatLng p, List<LatLng> line) {
+    if (line.length < 2) return 0;
+
+    final index = nearestSegment(p, line).segmentIndex;
+    final a = line[index];
+    final b = line[index + 1];
+
+    final cross =
+        (b.longitude - a.longitude) * (p.latitude - a.latitude) -
+        (b.latitude - a.latitude) * (p.longitude - a.longitude);
+    if (cross > 0) return 1;
+    if (cross < 0) return -1;
+    return 0;
+  }
+
+  /// Whether [p] has ended up on the far side of [line] from [reference].
+  ///
+  /// > [!IMPORTANT]
+  /// > This is what makes a crossing detectable at all. Distance alone cannot
+  /// > do it: once a vessel is past the boundary the distance starts growing
+  /// > again, so a purely distance-driven alarm falls silent at exactly the
+  /// > moment it matters most.
+  static bool hasCrossed(LatLng p, List<LatLng> line, {required LatLng reference}) {
+    final home = sideOfPolyline(reference, line);
+    final here = sideOfPolyline(p, line);
+    if (home == 0 || here == 0) return false;
+    return home != here;
   }
 
   static double _distanceToSegmentKm(LatLng p, LatLng a, LatLng b) {

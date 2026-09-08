@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/models/safety_level.dart';
+import '../../core/widgets/freshness_bar.dart';
+import '../advisory/advisory_controller.dart';
+import '../alarm/alarm_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/action_card.dart';
@@ -26,6 +29,8 @@ class SafetyScreen extends ConsumerWidget {
     final conditions = ref.watch(seaConditionsProvider);
     final boundary = ref.watch(boundaryStatusProvider);
     final voyage = ref.watch(voyageProvider);
+    final advisory = ref.watch(advisoryProvider);
+    final alarm = ref.watch(alarmProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -89,12 +94,47 @@ class SafetyScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 28),
 
+            const SectionHeader(
+              title: 'Offline data',
+              titleTa: 'சேமித்த தரவு',
+            ),
+            FreshnessBar(pack: advisory.value),
+            const SizedBox(height: AppSizes.gap),
+            ActionCard(
+              icon: advisory.isLoading
+                  ? Icons.hourglass_top_rounded
+                  : Icons.download_rounded,
+              accent: AppColors.horizon,
+              title: advisory.isLoading
+                  ? 'Downloading…'
+                  : 'Download for offline use',
+              subtitle: ref.read(advisoryProvider.notifier).lastError ??
+                  'Get boundaries, fishing zones and forecast',
+              trailing: advisory.isLoading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : null,
+              onTap: advisory.isLoading
+                  ? null
+                  : () => ref
+                        .read(advisoryProvider.notifier)
+                        .download(voyage.position),
+            ),
+            const SizedBox(height: 28),
+
             const SectionHeader(title: 'Boundary', titleTa: 'எல்லை'),
             ActionCard(
-              icon: boundary.level == SafetyLevel.safe
-                  ? Icons.shield_outlined
-                  : Icons.report_problem_rounded,
-              accent: boundary.level.color,
+              icon: alarm.level.isActive
+                  ? alarm.level.icon
+                  : (boundary.level == SafetyLevel.safe
+                        ? Icons.shield_outlined
+                        : Icons.report_problem_rounded),
+              accent: alarm.level.isActive
+                  ? alarm.level.color
+                  : boundary.level.color,
               title: boundary.headline,
               subtitle: boundary.isApproaching
                   ? 'Heading toward ${boundary.name}'
@@ -118,6 +158,10 @@ class SafetyScreen extends ConsumerWidget {
               ),
               onTap: () => ref.read(voyageProvider.notifier).toggleVoyage(),
             ),
+            if (voyage.permissionDenied) ...[
+              const SizedBox(height: AppSizes.gap),
+              const _PermissionWarning(),
+            ],
             const SizedBox(height: 28),
 
             VoiceButton(onTap: onAsk),
@@ -181,6 +225,24 @@ class _LanguageChip extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Shown when location permission was refused.
+///
+/// The geofence cannot run without fixes, and the app must say so plainly
+/// rather than showing a stationary boat and implying the alarm is armed.
+class _PermissionWarning extends StatelessWidget {
+  const _PermissionWarning();
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionCard(
+      icon: Icons.location_off_rounded,
+      accent: AppColors.danger,
+      title: 'Location is off',
+      subtitle: 'Boundary alarms cannot work without it. இருப்பிடம் தேவை.',
     );
   }
 }

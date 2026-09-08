@@ -4,7 +4,7 @@
 > This is a living document. Update your respective task statuses here before closing any pull request to the `staging` branch.
 
 ## Current Status Overview
-**Active Phase:** Phase 3 (Offline Safety Kernel & The Alarm) — Part I, pre-prototype
+**Active Phase:** Phase 4 (Conversational Layer) — Part I, pre-prototype
 **Overall Health:** On Track
 **Last Updated:** 2026-09-08
 
@@ -37,11 +37,14 @@
 - [x] Verified: 19/19 tests pass, ruff clean, live data confirmed end to end.
 - [ ] Local PostGIS container — **deferred to Phase 6**, not needed for the video.
 
-**Phase 3: Offline Safety Kernel & The Alarm — Pending**
-- [ ] `sqflite` advisory-pack cache.
-- [ ] `geolocator` position stream + `DEMO_MODE` scripted track.
-- [ ] Full-screen boundary alarm: siren, haptic, time-to-breach escalation.
-- [ ] Staleness meter; airplane-mode verification.
+**Phase 3: Offline Safety Kernel & The Alarm — Complete**
+- [x] `sqflite` advisory-pack cache with graceful degradation.
+- [x] `LocationService` seam: real `geolocator` stream, or a scripted demo track.
+- [x] Full-screen boundary alarm — bundled siren, haptics, one-way escalation.
+- [x] Crossing detection by side-of-line (see Architecture Decisions).
+- [x] Staleness meter that drains over the pack's validity window.
+- [x] Verified: 42/42 tests pass, analyzer clean, debug APK builds.
+- [ ] Airplane-mode rehearsal on a physical handset — needs a device.
 
 **Phase 4: Conversational Layer — Pending**
 - [ ] LangGraph supervisor + specialists on Gemini 2.5 Flash.
@@ -69,6 +72,15 @@ The problem statement demands a conversational AI platform, but the app must wor
 *   **Online Reasoning Brain** — the LangGraph agent swarm. Runs at port or within cell range.
 
 A language model never decides whether the vessel is about to cross a maritime boundary.
+
+### Crossing detection is side-of-line, not distance
+
+A boundary alarm driven purely by distance falls silent at the worst possible
+moment: once the vessel is past the line the distance starts growing again, so
+"am I getting closer?" answers no. The kernel therefore compares which *side* of
+the boundary the vessel is on against its home port, and treats a side change as
+a breach regardless of distance. Found by the escalation test in
+`mobile/test/alarm_escalation_test.dart`, which is the regression guard.
 
 ### Demo region
 Palk Strait / Rameswaram. The IMBL sits close to shore there and boundary crossings are a well-documented real-world problem, which makes the geofencing demo urgent rather than academic.
