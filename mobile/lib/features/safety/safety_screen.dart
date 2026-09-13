@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../chat/chat_bubble.dart';
 import '../../core/models/safety_level.dart';
 import '../../core/widgets/freshness_bar.dart';
 import '../advisory/advisory_controller.dart';
@@ -38,6 +38,7 @@ class SafetyScreen extends ConsumerWidget {
         title: const _Wordmark(),
         actions: const [_LanguageChip(), SizedBox(width: AppSizes.gutter)],
       ),
+      floatingActionButton: const ChatBubble(),
       body: SafeArea(
         top: false,
         child: ListView(
