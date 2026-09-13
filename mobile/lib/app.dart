@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
-import 'features/shell/home_shell.dart';
+import 'features/auth/auth_gate.dart';
 
 class OrcaApp extends StatelessWidget {
   const OrcaApp({super.key});
@@ -26,7 +26,7 @@ class OrcaApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: const HomeShell(),
+      home: const AuthGate(),
     );
   }
 }
