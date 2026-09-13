@@ -23,6 +23,15 @@ abstract final class Env {
   /// the boundary alarm can be demonstrated on land. See `PROJECT_STATE.md`.
   static bool get demoMode => _read('DEMO_MODE', fallback: 'true') == 'true';
 
+  /// Supabase project URL and anon (public) key, used to initialise the
+  /// Supabase client for authentication. The anon key is safe to ship inside
+  /// the app bundle — it is designed to be public — but it still lives in
+  /// `.env` rather than source so a project swap never needs a code change.
+  static String get supabaseUrl => _read('SUPABASE_URL', fallback: '');
+
+  static String get supabaseAnonKey =>
+      _read('SUPABASE_ANON_KEY', fallback: '');
+
   static String _read(String key, {required String fallback}) {
     // `dotenv` throws rather than returning null when `load()` was never
     // called, which happens in widget tests and on any handset where the
