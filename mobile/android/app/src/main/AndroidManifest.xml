@@ -9,6 +9,16 @@
     <!-- Boundary alarms must be felt, not just seen, in poor visibility. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Required on Android 11+ (API 30+) so the plugin can query the speech recognizer -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
     <application
         android:label="ORCA"
         android:name="${applicationName}"

@@ -43,7 +43,11 @@ dependencies:
   sqflite: ^2.4.3
   path: ^1.9.1
   audioplayers: ^6.8.1
-  supabase_flutter: ^2.10.3
+  supabase_flutter: ^2.17.2
+  shared_preferences: ^2.5.5
+  # for tts and stt
+  speech_to_text: ^7.0.0
+  flutter_tts: ^4.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

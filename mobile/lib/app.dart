@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'core/theme/app_theme.dart';
-import 'features/auth/auth_gate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OrcaApp extends StatelessWidget {
-  const OrcaApp({super.key});
+import 'core/theme/app_theme.dart';
+import 'features/auth/auth_controller.dart';
+import 'features/auth/login_screen.dart';
+import 'features/shell/home_shell.dart';
+
+class OrcaApp extends ConsumerWidget {
+  const OrcaApp({super.key, this.home});
+
+  /// Allows explicit screen injection for tests or deep navigation.
+  final Widget? home;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAuthenticated = ref.watch(isAuthenticatedProvider);
+
     return MaterialApp(
       title: 'ORCA',
       debugShowCheckedModeBanner: false,
@@ -26,7 +35,7 @@ class OrcaApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: const AuthGate(),
+      home: home ?? (isAuthenticated ? const HomeShell() : const LoginScreen()),
     );
   }
 }
