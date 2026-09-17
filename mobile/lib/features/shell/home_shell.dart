@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../alarm/alarm_controller.dart';
 import '../alarm/alarm_overlay.dart';
 import '../ask/ask_screen.dart';
+import '../chat/chat_screen.dart';
 import '../map/map_screen.dart';
 import '../safety/safety_screen.dart';
 
-/// Three destinations, always visible, always labelled.
+/// Four destinations, always visible, always labelled.
 ///
 /// No drawer, no nested tabs, no hidden gestures. Every screen is one tap from
 /// every other — and the boundary alarm sits above all of them.
@@ -40,6 +41,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               SafetyScreen(onAsk: () => _go(2), onOpenMap: () => _go(1)),
               const MapScreen(),
               const AskScreen(),
+              const ChatScreen(),
             ],
           ),
           bottomNavigationBar: Column(
@@ -67,6 +69,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     selectedIcon: Icon(Icons.mic_rounded),
                     label: 'Ask',
                     tooltip: 'Ask · கேளுங்கள்',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.chat_bubble_outline_rounded),
+                    selectedIcon: Icon(Icons.chat_bubble_rounded),
+                    label: 'Chat',
+                    tooltip: 'Chat · உரையாடு',
                   ),
                 ],
               ),
