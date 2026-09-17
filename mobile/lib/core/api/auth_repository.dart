@@ -53,6 +53,11 @@ class AuthRepository {
   /// Offline / demo sessions are intentionally NOT restored — the user must
   /// log in again on each launch when Supabase is not configured.
   Future<UserProfile?> restoreSession() async {
+    // Check in-memory first for valid cloud sessions.
+    if (_inMemoryUser != null && _inMemoryUser!.isOffline != true) {
+      return _inMemoryUser;
+    }
+
     // 1. Try restoring from a live Supabase session first.
     final supabase = client;
     if (supabase != null) {
