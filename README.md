@@ -115,6 +115,11 @@ flutter test        # must be green
 > read by the backend, never by the app.
 
 
+If you have any doubts regarding the `.env` setup, API keys, or face any issues contact me directly.
+
 ---
 
-If you have any doubts regarding the `.env` setup, API keys, or face any issues contact me directly.
+### **Login Page Credentials**
+
+- **Email account:** user1@orca.com
+- **Password:** password123
